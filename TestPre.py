@@ -30,7 +30,11 @@ class initPreObj(object):
         print("> null값 제거중...")
         self._data = self._data.dropna()
         print('> Check null status :'+str(self._data.isnull().sum()))
-        
+
+        print("> 구매 취소 건 제거중...")
+        self._data = self._data[self._data.prchs_cancel_yn != 'Y']
+
+
         return self._data
 
     def save_result_df(self, path):
