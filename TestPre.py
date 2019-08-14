@@ -27,6 +27,10 @@ class initPreObj(object):
         del self._data['pkg_nm']
         del self._data['payment_mtd_nm']
 
+        print("> null값 제거중...")
+        self._data = self._data.dropna()
+        print('> Check null status :'+str(self._data.isnull().sum()))
+        
         return self._data
 
     def save_result_df(self, path):
