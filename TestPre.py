@@ -34,6 +34,9 @@ class initPreObj(object):
         print("> 구매 취소 건 제거중...")
         self._data = self._data[self._data.prchs_cancel_yn != 'Y']
 
+        print("> new_id 생성중 (user id + device id)...")
+        self._data['new_id'] = self._data['insd_usermbr_no'].astype('str')+self._data['insd_device_id'].astype('str')
+
 
         return self._data
 
