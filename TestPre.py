@@ -38,6 +38,17 @@ class initPreObj(object):
         self._data['new_id'] = self._data['insd_usermbr_no'].astype('str')+self._data['insd_device_id'].astype('str')
 
 
+        del self._data['insd_usermbr_no'] 
+        del self._data['insd_device_id']
+
+        print("> 가입날짜 가공중...")
+        # 가입날짜 가공
+        self._data['mbr_entry_yymm'] = self._data['mbr_entry_yymm']*100+1
+        self._data['mbr_entry_yymm'] = round(self._data['mbr_entry_yymm'])
+        self._data['mbr_entry_yymm'].astype('int')
+        self._data['mbr_entry_yymm'].astype('str')
+        self._data['mbr_entry_yymm'] = pd.to_datetime(self._data['mbr_entry_yymm'], format='%Y%m%d')
+        
         return self._data
 
     def save_result_df(self, path):
