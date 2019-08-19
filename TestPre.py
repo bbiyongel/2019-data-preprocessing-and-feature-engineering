@@ -54,6 +54,10 @@ class initPreObj(object):
         # Day of week (요일) 변수 생성
         self._data['dayofweek'] = self._data['partition_dt'].dt.weekday.astype('int8')
 
+        print("> New category 생성중...")
+        # New category 생성
+        self._data['new_cat'] = self._data.loc[:, 'dtl_category_no'].apply(lambda x: x[0:4])
+
         return self._data
 
     def save_result_df(self, path):
