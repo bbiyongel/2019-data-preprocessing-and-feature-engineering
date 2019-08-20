@@ -101,6 +101,24 @@ class initPreObj(object):
         label_sex_clsf_cd = pd.Series(list(encoder7.classes_))
         print(label_sex_clsf_cd)
 
+        print(" # 유저의 나이 - age_cd")
+
+        # 널값에 대해서는 평균나이 40으로 일괄 적용
+        self._data.loc[self._data['age_cd'] == 'ZZZ','age_cd'] = '40'
+        self._data.age_cd = self._data.age_cd.astype(int)
+
+        #나이 분류
+        self._data.loc[self._data['age_cd']<=9,'age_cd']=1
+        self._data.loc[(self._data['age_cd'] <=19) & (self._data['age_cd']>9) ,'age_cd'] =10
+        self._data.loc[(self._data['age_cd'] <=29) & (self._data['age_cd']>19) ,'age_cd']=20
+        self._data.loc[(self._data['age_cd'] <=39) & (self._data['age_cd']>29) ,'age_cd']=30
+        self._data.loc[(self._data['age_cd'] <=49) & (self._data['age_cd']>39) ,'age_cd']=40
+        self._data.loc[(self._data['age_cd'] <=59) & (self._data['age_cd']>49) ,'age_cd']=50
+        self._data.loc[(self._data['age_cd'] <=69) & (self._data['age_cd']>59) ,'age_cd']=60
+        self._data.loc[(self._data['age_cd'] <=79) & (self._data['age_cd']>69) ,'age_cd']=70
+        self._data.loc[(self._data['age_cd'] <=89) & (self._data['age_cd']>79) ,'age_cd']=80
+        self._data.loc[(self._data['age_cd'] <=99) & (self._data['age_cd']>89) ,'age_cd']=90
+        self._data.loc[self._data['age_cd']>99,'age_cd']=100
 
         return self._data
 
