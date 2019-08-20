@@ -120,6 +120,13 @@ class initPreObj(object):
         self._data.loc[(self._data['age_cd'] <=99) & (self._data['age_cd']>89) ,'age_cd']=90
         self._data.loc[self._data['age_cd']>99,'age_cd']=100
 
+        # Label Encoding
+        encoder8 = LabelEncoder()
+        self._data.loc[:, 'age_cd'] = encoder8.fit_transform(self._data.loc[:, 'age_cd'])
+        label_age_cd = pd.Series(list(encoder8.classes_))
+        print(label_age_cd)
+
+        
         return self._data
 
     def save_result_df(self, path):
