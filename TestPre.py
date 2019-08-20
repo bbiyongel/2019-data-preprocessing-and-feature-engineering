@@ -58,6 +58,50 @@ class initPreObj(object):
         # New category 생성
         self._data['new_cat'] = self._data.loc[:, 'dtl_category_no'].apply(lambda x: x[0:4])
 
+        # Label Encoding
+        print("> label encoding 처리중...")
+
+        # encode class values as integers
+
+        encoder1 = LabelEncoder()
+
+        self._data.loc[:, 'payment_mtd_cd'] = encoder1.fit_transform(self._data.loc[:, 'payment_mtd_cd'])
+        label_payment_mtd_cd = pd.Series(list(encoder1.classes_))
+        # name = str(label_payment_mtd_cd.name)
+        # label_payment_mtd_cd.to_csv('%s.csv'%(name),index_label=False)
+        print(label_payment_mtd_cd)
+
+        encoder2 = LabelEncoder()
+        self._data.loc[:, 'prchs_tm_clsf_nm'] = encoder2.fit_transform(self._data.loc[:, 'prchs_tm_clsf_nm'])
+        label_prchs_tm_clsf_nm = pd.Series(list(encoder2.classes_))
+        print(label_prchs_tm_clsf_nm)
+
+        encoder3 = LabelEncoder()
+        self._data.loc[:, 'chrg_apply_clsf_nm'] = encoder3.fit_transform(self._data.loc[:, 'chrg_apply_clsf_nm'])
+        label_chrg_apply_clsf_nm = pd.Series(list(encoder3.classes_))
+        print(label_chrg_apply_clsf_nm)
+
+        encoder4 = LabelEncoder()
+        self._data.loc[:, 'mno_nm'] = encoder4.fit_transform(self._data.loc[:, 'mno_nm'])
+        label_mno_nm = pd.Series(list(encoder4.classes_))
+        print(label_mno_nm )
+
+        encoder5 = LabelEncoder()
+        self._data.loc[:, 'dtl_category_no'] = encoder5.fit_transform(self._data.loc[:, 'dtl_category_no'])
+        label_dtl_category_no = pd.Series(list(encoder5.classes_))
+        print(label_dtl_category_no)
+
+        encoder6 = LabelEncoder()
+        self._data.loc[:, 'new_cat'] = encoder6.fit_transform(self._data.loc[:, 'new_cat'])
+        label_new_cat = pd.Series(list(encoder6.classes_))
+        print(label_new_cat)
+
+        encoder7 = LabelEncoder()
+        self._data.loc[:, 'sex_clsf_cd'] = encoder7.fit_transform(self._data.loc[:, 'sex_clsf_cd'])
+        label_sex_clsf_cd = pd.Series(list(encoder7.classes_))
+        print(label_sex_clsf_cd)
+
+
         return self._data
 
     def save_result_df(self, path):
