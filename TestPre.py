@@ -133,9 +133,44 @@ class initPreObj(object):
         self.wv.rename(columns={'index':'prod_id'},inplace=True)
         self.wv.columns = ['prod_id', 'w2v_prod_clr']
         self._data = pd.merge(self._data,self.wv,how='left')
-                
+
         return self._data
 
     def save_result_df(self, path):
         print("> 전체 csv 파일 생성중...")
         self._data.to_csv(path,index_label = False)
+
+
+class FeatureObj(object):
+    def __init__(self, path, split_day, mode):
+        if mode == 0:
+            # mode가 0인 경우 DataFrame을 바로 가져오는 경우
+            self._data = path
+            self._data['partition_dt'] = pd.to_datetime(self._data['partition_dt'])
+            self._data['mbr_entry_yymm'] = pd.to_datetime(self._data['mbr_entry_yymm'])
+            self._split_date = self._data['partition_dt'].max() - pd.Timedelta(days=split_day)
+            self._post_data = self._data.loc[self._data['partition_dt'] > self._split_date]
+            self._data = self._data.loc[self._data['partition_dt'] <= self._split_date]
+            self.user_df = pd.DataFrame({'new_id' : self._data['new_id'].unique()})
+        else:
+            # mode가 1인 경우 경로를 읽어오는 경우
+            self._data = pd.read_csv(path)
+            self._data['partition_dt'] = pd.to_datetime(self._data['partition_dt'])
+            self._data['mbr_entry_yymm'] = pd.to_datetime(self._data['mbr_entry_yymm'])
+            self._split_date = self._data['partition_dt'].max() - pd.Timedelta(days=split_day)
+            self._post_data = self._data.loc[self._data['partition_dt'] > self._split_date]
+            self._data = self._data.loc[self._data['partition_dt'] <= self._split_date]
+            self.user_df = pd.DataFrame({'new_id' : self._data['new_id'].unique()})
+            print(self.user_df.shape)
+
+    def __del__(self):
+        pass
+
+    def save_result_df(self, path):
+        print("> 전체 csv 파일 생성중...")
+        self.user_df.to_csv(path,index_label = False)
+        print(self.user_df.shape)
+
+    def get_result_df(self): 
+
+        return self.user_df
