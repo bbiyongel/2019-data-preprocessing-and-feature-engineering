@@ -126,7 +126,14 @@ class initPreObj(object):
         label_age_cd = pd.Series(list(encoder8.classes_))
         print(label_age_cd)
 
-        
+        print("# prod_id - Word2Vec")
+
+        self.wv = pd.read_csv('/notebooks/data/onechu/Preprocessing/Suhyeon/w2v_prod_cl.csv')
+        self.wv.reset_index(inplace=True)
+        self.wv.rename(columns={'index':'prod_id'},inplace=True)
+        self.wv.columns = ['prod_id', 'w2v_prod_clr']
+        self._data = pd.merge(self._data,self.wv,how='left')
+                
         return self._data
 
     def save_result_df(self, path):
