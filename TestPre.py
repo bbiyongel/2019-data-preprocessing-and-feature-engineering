@@ -173,4 +173,9 @@ class FeatureObj(object):
 
     def get_result_df(self): 
 
+        print("# 데이터가 가진 최신 날짜")
+        # 데이터가 가진 최신 날짜
+        self.our_last_date = self._data['partition_dt'].max()
+        print(self.user_df.shape)
+
         return self.user_df
