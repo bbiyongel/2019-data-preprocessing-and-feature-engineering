@@ -200,6 +200,14 @@ class FeatureObj(object):
         self.user_df = pd.merge(self.user_df, self.temp_df, how='left')
         print(self.user_df.shape)
         del self.our_last_date
-        
+
+        print("# 유저별 처음으로 구매일 - 'init_prchs_date'")
+
+        self.init_date = pd.pivot_table(self._data,index=["new_id"],values=["partition_dt"],aggfunc=min)
+        self.init_date.rename(columns={'partition_dt':'init_prchs_date'}, inplace=True)
+        self.init_date.reset_index(level=0, inplace=True)
+        self.user_df = pd.merge(self.user_df, self.init_date, how='left')
+        print(self.user_df.shape)
+        del self.init_date
 
         return self.user_df
