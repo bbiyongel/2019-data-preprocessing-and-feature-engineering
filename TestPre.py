@@ -192,4 +192,14 @@ class FeatureObj(object):
         print(self.user_df.shape)
         del self.last_date
 
+        print(" # 가입경과일 ")
+
+        self.temp_df = self._data.loc[:,['mbr_entry_yymm','new_id']].drop_duplicates()
+        self.temp_df['days_from_register'] = (self.our_last_date - self.temp_df['mbr_entry_yymm']).dt.days
+        self.temp_df = self.temp_df.loc[:,['new_id', 'days_from_register']]
+        self.user_df = pd.merge(self.user_df, self.temp_df, how='left')
+        print(self.user_df.shape)
+        del self.our_last_date
+        
+
         return self.user_df
