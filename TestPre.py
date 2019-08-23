@@ -178,4 +178,11 @@ class FeatureObj(object):
         self.our_last_date = self._data['partition_dt'].max()
         print(self.user_df.shape)
 
+        print("# 유저별 마지막으로 구매일 - 'last_prchs_date'")
+
+        self.last_date = pd.pivot_table(self._data,index=["new_id"],values=["partition_dt"],aggfunc=max)
+        self.last_date.rename(columns={'partition_dt':'last_prchs_date'}, inplace=True)
+        self.last_date.reset_index(level=0, inplace=True)
+        print(self.user_df.shape)
+
         return self.user_df
