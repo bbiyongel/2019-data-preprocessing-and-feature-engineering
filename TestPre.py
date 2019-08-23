@@ -185,4 +185,11 @@ class FeatureObj(object):
         self.last_date.reset_index(level=0, inplace=True)
         print(self.user_df.shape)
 
+        print("# Recency (데이터가 가진 최신 날짜 - 유저별 마지막 구매일)")
+
+        self.last_date['Recency'] =  (self.our_last_date - self.last_date['last_prchs_date']).dt.days
+        self.user_df = pd.merge(self.user_df, self.last_date, how='left')
+        print(self.user_df.shape)
+        del self.last_date
+
         return self.user_df
