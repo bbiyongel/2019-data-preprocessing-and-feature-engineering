@@ -210,4 +210,13 @@ class FeatureObj(object):
         print(self.user_df.shape)
         del self.init_date
 
+        print("# 유저별 Frequency (유저의 총 구매횟수)")
+
+        self.temp_df = self._data[['new_id', 'prchs_id']].drop_duplicates()
+        self.Frequency = self.temp_df.groupby(self.temp_df['new_id'], as_index=False).count()
+        self.Frequency.columns = ['new_id', 'Frequency']
+        self.user_df = pd.merge(self.user_df, self.Frequency, how='left')
+        print(self.user_df.shape)
+        del self.Frequency
+
         return self.user_df
