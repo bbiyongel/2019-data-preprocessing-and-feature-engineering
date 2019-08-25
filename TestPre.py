@@ -219,4 +219,13 @@ class FeatureObj(object):
         print(self.user_df.shape)
         del self.Frequency
 
+        print(" # 일 기준 총 구매 횟수 - day_freq")
+
+        self.temp_df = self._data.loc[:,['new_id', 'partition_dt']].drop_duplicates()
+        self.day_freq = self.temp_df.groupby(self.temp_df['new_id'], as_index=False).count()
+        self.day_freq.columns = ['new_id', 'day_freq']
+        self.user_df = pd.merge(self.user_df, self.day_freq, how='left')
+        print(self.user_df.shape)
+        del self.day_freq
+
         return self.user_df
