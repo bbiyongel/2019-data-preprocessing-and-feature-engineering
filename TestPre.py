@@ -245,4 +245,12 @@ class FeatureObj(object):
         print(self.user_df.shape)
         del self.clsf_dtl_cat_n
 
+        print("# 유저별 구매한 new_cat 종류 수 ")
+        #유저별 구매한 new_cat 종류 수 
+        self.temp_df = self._data.groupby(["new_id"])["new_cat"].nunique()
+        self.clsf_new_cat_n = pd.DataFrame({'new_id':self.temp_df.index, 'clsf_new_cat_n':self.temp_df.values})
+        self.user_df = pd.merge(self.user_df, self.clsf_new_cat_n, how='left')
+        print(self.user_df.shape)
+        del self.clsf_new_cat_n
+
         return self.user_df
