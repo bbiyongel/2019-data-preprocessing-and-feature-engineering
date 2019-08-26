@@ -268,4 +268,14 @@ class FeatureObj(object):
         self.user_df['cpn_pref'] = self.user_df['cpn_freq'] / self.user_df['Frequency'] * 100
         print(self.user_df.shape)
 
+        print(" # free_freq ")
+
+        self.free_freq_df = self._data.loc[self._data['chrg_apply_clsf_nm'] == 0, ['new_id','prchs_id']].drop_duplicates()
+        self.free_df = self.free_freq_df.groupby(self.free_freq_df['new_id'], as_index=False).count()
+        self.free_df.columns = ['new_id','free_freq']
+        self.user_df = pd.merge(self.user_df, self.free_df, how='left')
+        print(self.user_df.shape)
+        del self.free_freq_df
+        del self.free_df
+
         return self.user_df
