@@ -253,4 +253,19 @@ class FeatureObj(object):
         print(self.user_df.shape)
         del self.clsf_new_cat_n
 
+        print("# cpn freq cpn_pref")
+        ## 1-2. 이전 단계와 마찬가지로 유저별로 쿠폰을 사용하여 구매한 총 횟수를 구한다.
+        self.coupon_filtered_unique_df = self._data.loc[self._data['payment_mtd_cd']==4, ['new_id', 'prchs_id']].drop_duplicates()
+        ### 유저별로 Group by 하여 Coupon Frequency('cpn_freq')를 구한다.
+        self.coupon_grouped_df = self.coupon_filtered_unique_df.groupby(self.coupon_filtered_unique_df['new_id'], as_index=False).count()
+        ### user_df와 Merge하기위해 컬럼명을 미리 변경해준다.
+        self.coupon_grouped_df.columns = ['new_id', 'cpn_freq']
+        ### user_df 을 기준으로 Merge를 진행한다.
+        self.user_df = pd.merge(self.user_df, self.coupon_grouped_df, how='left')
+        del self.coupon_filtered_unique_df
+        del self.coupon_grouped_df
+        self.user_df = self.user_df.fillna(0)
+        self.user_df['cpn_pref'] = self.user_df['cpn_freq'] / self.user_df['Frequency'] * 100
+        print(self.user_df.shape)
+
         return self.user_df
