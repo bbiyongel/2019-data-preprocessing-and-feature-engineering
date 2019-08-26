@@ -228,4 +228,12 @@ class FeatureObj(object):
         print(self.user_df.shape)
         del self.day_freq
 
+        print("#유저별 구매한 상품 종류 수")
+
+        self.temp_df = self._data.groupby(["new_id"])["prod_id"].nunique()
+        self.clsf_prod_n = pd.DataFrame({'new_id':self.temp_df.index, 'clsf_prod_n':self.temp_df.values})
+        self.user_df = pd.merge(self.user_df, self.clsf_prod_n, how='left')
+        print(self.user_df.shape)
+        del self.clsf_prod_n
+
         return self.user_df
