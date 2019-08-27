@@ -285,4 +285,12 @@ class FeatureObj(object):
         del self.user_df['cpn_freq']
         print(self.user_df.shape)
 
+        print("# 유저별 북스캐쉬 - 'bcash_purchs_cnt'")
+
+        self.temp_df = self._data.loc[(self._data['payment_mtd_cd'] == 12) | (self._data['payment_mtd_cd'] == 11), ['new_id', 'prchs_id']].drop_duplicates()
+        self.temp_df = self.temp_df.groupby(self.temp_df['new_id'], as_index=False).count()
+        self.temp_df.columns = ['new_id', 'bcash_purchs_cnt']
+        self.user_df = pd.merge(self.user_df, self.temp_df, how='left')
+        print(self.user_df.shape)
+
         return self.user_df
