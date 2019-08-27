@@ -293,4 +293,20 @@ class FeatureObj(object):
         self.user_df = pd.merge(self.user_df, self.temp_df, how='left')
         print(self.user_df.shape)
 
+        print("# 유저별 총 쿠폰 결제금액 - 기초통계량 변수")
+
+        self.temp_df = self._data.loc[:,['sett_target_cpn_amt','new_id']]
+        # SUM
+        self.temp_df_agg = pd.pivot_table(self.temp_df,index=["new_id"],aggfunc=np.sum)
+        self.temp_df_agg.rename(columns={'sett_target_cpn_amt':'sett_target_cpn_amt_sum'},inplace=True)
+        # MEAN, MAX, MIN, STD, VAR  
+        self.temp_df_agg['sett_target_cpn_amt_mean']=pd.pivot_table(self.temp_df,index=["new_id"],aggfunc=np.mean)
+        self.temp_df_agg['sett_target_cpn_amt_max']=pd.pivot_table(self.temp_df,index=["new_id"],aggfunc=np.max)
+        self.temp_df_agg['sett_target_cpn_amt_min']=pd.pivot_table(self.temp_df,index=["new_id"],aggfunc=np.min)
+        self.temp_df_agg['sett_target_cpn_amt_std']=pd.pivot_table(self.temp_df,index=["new_id"],aggfunc=np.std)
+        self.temp_df_agg['sett_target_cpn_amt_var']=pd.pivot_table(self.temp_df,index=["new_id"],aggfunc=np.var)
+        self.temp_df_agg.reset_index(level=0, inplace=True)
+        self.user_df = pd.merge(self.user_df, self.temp_df_agg, how='left')
+        print(self.user_df.shape)
+
         return self.user_df
