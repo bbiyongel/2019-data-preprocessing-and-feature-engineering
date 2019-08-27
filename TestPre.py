@@ -278,4 +278,11 @@ class FeatureObj(object):
         del self.free_freq_df
         del self.free_df
 
+        print(" # free_pref ")
+
+        self.user_df = self.user_df.fillna(0)
+        self.user_df['free_pref'] = self.user_df['free_freq'] / self.user_df['Frequency'] * 100
+        del self.user_df['cpn_freq']
+        print(self.user_df.shape)
+
         return self.user_df
