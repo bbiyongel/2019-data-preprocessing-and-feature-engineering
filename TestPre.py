@@ -342,4 +342,20 @@ class FeatureObj(object):
         self.user_df = pd.merge(self.user_df, self.temp_df_agg, how='left')
         print(self.user_df.shape)
 
+        print(" # 유저별 총 실결제 금액 - 기초통계량 변수")
+
+        self.temp_df = self._data.loc[:,['cust_payment_amt','new_id']]
+        # SUM
+        self.temp_df_agg = pd.pivot_table(self.temp_df,index=["new_id"],aggfunc=np.sum)
+        self.temp_df_agg.rename(columns={'cust_payment_amt':'Monetary'},inplace=True)
+        # MEAN, MAX, MIN, STD, VAR  
+        self.temp_df_agg['avg_prchs_amt']=pd.pivot_table(self.temp_df,index=["new_id"],aggfunc=np.mean)
+        self.temp_df_agg['cust_payment_amt_max']=pd.pivot_table(self.temp_df,index=["new_id"],aggfunc=np.max)
+        self.temp_df_agg['cust_payment_amt_min']=pd.pivot_table(self.temp_df,index=["new_id"],aggfunc=np.min)
+        self.temp_df_agg['cust_payment_amt_std']=pd.pivot_table(self.temp_df,index=["new_id"],aggfunc=np.std)
+        self.temp_df_agg['cust_payment_amt_var']=pd.pivot_table(self.temp_df,index=["new_id"],aggfunc=np.var)
+        self.temp_df_agg.reset_index(level=0, inplace=True)
+        self.user_df = pd.merge(self.user_df, self.temp_df_agg, how='left')
+        print(self.user_df.shape)
+
         return self.user_df
