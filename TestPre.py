@@ -358,4 +358,16 @@ class FeatureObj(object):
         self.user_df = pd.merge(self.user_df, self.temp_df_agg, how='left')
         print(self.user_df.shape)
 
+        print(" # 유저의 성별 - sex_clsf_cd")
+        # 중도에 성별이 바뀌는 경우 유저가 중복되어 들어가므로 가장 최근 구매건에 명시되어 있는 성별값으로 설정
+        self.temp_df = self._data.loc[:,['sex_clsf_cd','new_id']].drop_duplicates().groupby(['new_id']).tail(1)
+        self.user_df = pd.merge(self.user_df, self.temp_df, how='left')
+        print(self.user_df.shape)
+
+        print(" # 유저의 나이")
+        self.temp_df = self._data.loc[:,['age_cd','new_id']].drop_duplicates().groupby(['new_id']).tail(1)
+        self.temp_df.rename(columns={'age_cd':'age_cat'}, inplace=True)
+        self.user_df = pd.merge(self.user_df, self.temp_df, how='left')
+        print(self.user_df.shape)
+
         return self.user_df
