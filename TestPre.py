@@ -370,4 +370,9 @@ class FeatureObj(object):
         self.user_df = pd.merge(self.user_df, self.temp_df, how='left')
         print(self.user_df.shape)
 
+        print(" # 유저 통신사")
+        self.temp_df = self._data.loc[:,['mno_nm','new_id']].drop_duplicates().groupby(['new_id']).tail(1)
+        self.user_df = pd.merge(self.user_df, self.temp_df, how='left')
+        print(self.user_df.shape)
+
         return self.user_df
