@@ -423,4 +423,9 @@ class FeatureObj(object):
         self.user_df = pd.merge(self.user_df, self.total, how='left')
         print(self.user_df.shape)
 
+        print("diff_prchs_date")
+
+        self.user_df['diff_prchs_date'] = (self.user_df['last_prchs_date'] - self.user_df['init_prchs_date']).dt.days
+        print(self.user_df.shape)
+
         return self.user_df
