@@ -375,4 +375,9 @@ class FeatureObj(object):
         self.user_df = pd.merge(self.user_df, self.temp_df, how='left')
         print(self.user_df.shape)
 
+        print(" # 평균 구매 주기 - avg_prchs_cycle (사용기간/freq)")
+
+        self.user_df['avg_prchs_cycle'] = ((self.user_df['last_prchs_date'] - self.user_df['init_prchs_date']) / self.user_df['Frequency']).dt.days
+        print(self.user_df.shape)
+
         return self.user_df
