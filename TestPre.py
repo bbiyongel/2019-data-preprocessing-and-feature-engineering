@@ -428,4 +428,10 @@ class FeatureObj(object):
         self.user_df['diff_prchs_date'] = (self.user_df['last_prchs_date'] - self.user_df['init_prchs_date']).dt.days
         print(self.user_df.shape)
 
+        print("past churn")
+
+        self.user_df['past_churn'] = 0
+        self.user_df.loc[self.user_df.Recency > 7, 'past_churn'] = 1
+        print(self.user_df.shape)
+
         return self.user_df
