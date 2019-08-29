@@ -380,4 +380,9 @@ class FeatureObj(object):
         self.user_df['avg_prchs_cycle'] = ((self.user_df['last_prchs_date'] - self.user_df['init_prchs_date']) / self.user_df['Frequency']).dt.days
         print(self.user_df.shape)
 
+        print(" # day freq 기준 평균 구매 주기 - avg_prchs_day_cycle (사용기간/freq)")
+
+        self.user_df['avg_prchs_day_cycle'] = ((self.user_df['last_prchs_date'] - self.user_df['init_prchs_date']) / self.user_df['day_freq']).dt.days
+        print(self.user_df.shape)
+
         return self.user_df
