@@ -434,4 +434,50 @@ class FeatureObj(object):
         self.user_df.loc[self.user_df.Recency > 7, 'past_churn'] = 1
         print(self.user_df.shape)
 
+        print("max_prchs_cycle / min ~ / median")
+
+        #import the csv
+        self.tx_data = self._data.loc[:,['partition_dt','new_id']]
+
+        # 구매는 일단위로 본다
+        self.tx_data = self.tx_data.drop_duplicates()
+        # date 포맷 변경
+        self.tx_data['partition_dt'] = pd.to_datetime(self.tx_data['partition_dt'])
+        # new_id, partition_dt 를 기준으로 오름차순 정렬
+        self.tx_data = self.tx_data.sort_values(['new_id','partition_dt'], ascending=[True, True])
+
+        # Day Gap 계산
+        self.tx_data['PrevInvoiceDate'] = self.tx_data.groupby('new_id')['partition_dt'].shift(1)
+        self.tx_data['DayDiff'] = (self.tx_data['partition_dt'] - self.tx_data['PrevInvoiceDate']).dt.days
+        self.diff_df = self.tx_data[['new_id', 'DayDiff']]
+        del self.tx_data
+
+        # 유저별로 Max_day_gap / Min~ / Median ~ 뽑아내고 nan 행에 대해서는 median값으로 채워주기
+        self.diff_max_df =  self.diff_df.groupby(['new_id']).max()
+        self.diff_max_df.reset_index(level=0, inplace=True)
+        self.diff_max_df = self.diff_max_df.fillna(self.diff_max_df['DayDiff'].median())
+        self.diff_max_df.rename(columns={'DayDiff':'max_prchs_cycle'}, inplace=True)
+
+        self.diff_min_df =  self.diff_df.groupby(['new_id']).min()
+        self.diff_min_df.reset_index(level=0, inplace=True)
+        self.diff_min_df = self.diff_min_df.fillna(self.diff_min_df['DayDiff'].median())
+        self.diff_min_df.rename(columns={'DayDiff':'min_prchs_cycle'}, inplace=True)
+
+        self.diff_median_df =  self.diff_df.groupby(['new_id']).median()
+        self.diff_median_df.reset_index(level=0, inplace=True)
+        self.diff_median_df = self.diff_median_df.fillna(self.diff_median_df['DayDiff'].median())
+        self.diff_median_df.rename(columns={'DayDiff':'median_prchs_cycle'}, inplace=True)
+
+        del self.diff_df
+
+        # 마지막으로 user_df에 붙히기
+        self.user_df = pd.merge(self.user_df, self.diff_max_df, how='left')
+        self.user_df = pd.merge(self.user_df, self.diff_min_df, how='left')
+        self.user_df = pd.merge(self.user_df, self.diff_median_df, how='left')
+
+        del self.diff_max_df
+        del self.diff_min_df
+        del self.diff_median_df
+        print(self.user_df.shape)
+
         return self.user_df
