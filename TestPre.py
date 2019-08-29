@@ -385,4 +385,42 @@ class FeatureObj(object):
         self.user_df['avg_prchs_day_cycle'] = ((self.user_df['last_prchs_date'] - self.user_df['init_prchs_date']) / self.user_df['day_freq']).dt.days
         print(self.user_df.shape)
 
+        print("# pass / pass_yn / pass_nuique / pass_amt (유저별 정액권 피쳐)")
+
+        # init 데이터에 'pass' 컬럼 값 추가
+        self._data['pass'] =0
+        self._data['pass'].loc[self._data['new_cat']==3] =1
+
+        # new_id별로 pass count 값 추가
+        self.p = self._data.groupby(['new_id'])['pass'].sum()
+        self.p = pd.DataFrame(self.p)
+
+        # pass count로 pass_yn 변수까지 생성
+        self.p['pass_yn'] = 1
+        self.p.loc[self.p['pass']==0,['pass_yn']]=0
+
+        # pass 관련 새로운 변수를 groupby - 그전에 new_id를 컬럼으로 쓰기 위해 reset_index()함.
+        self.p.reset_index()
+
+        # pass_nunique, pass_amt는 DPFF 카테고리 구매건만 잘라서 DF를 만든 후, outer 조인으로 기존 p 와 병합.
+        self.DPFF = self._data.loc[self._data['new_cat']==3]
+        # dtl category가 dpff인 것들 구매 종류 수
+        self.nunique = self.DPFF.groupby('new_id')['dtl_category_no'].nunique()
+
+        # dtl category가 dpff인 것들의 구매금액
+        self.amt = self.DPFF.groupby('new_id')["cust_payment_amt"].sum()
+
+        # DataFrame으로 변환 후, 최종 merge (new_id별 새로운 feature matrix)
+        self.nunique = pd.DataFrame(self.nunique)
+        self.amt =pd.DataFrame(self.amt)
+        self.total = pd.merge(self.p,self.nunique,how='outer',on='new_id')
+        self.total = pd.merge(self.total,self.amt,how='outer',on='new_id')
+        # outer 조인이므로, 없는 값은 0 으로 채우기
+        self.total = self.total.fillna(0)
+        self.total.rename(columns={'dtl_category_no':'pass_nuique','cust_payment_amt':'pass_amt'},inplace=True)
+        self.total.reset_index(level=0, inplace=True)
+
+        self.user_df = pd.merge(self.user_df, self.total, how='left')
+        print(self.user_df.shape)
+
         return self.user_df
