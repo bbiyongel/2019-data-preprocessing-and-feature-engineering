@@ -48,7 +48,6 @@ class initPreObj(object):
         self._data['mbr_entry_yymm'].astype('int')
         self._data['mbr_entry_yymm'].astype('str')
         self._data['mbr_entry_yymm'] = pd.to_datetime(self._data['mbr_entry_yymm'], format='%Y%m%d')
-<<<<<<< HEAD
 
         print("> Day of week (요일) 변수 생성중...")
 
@@ -135,9 +134,6 @@ class initPreObj(object):
         self.wv.columns = ['prod_id', 'w2v_prod_clr']
         self._data = pd.merge(self._data,self.wv,how='left')
 
-=======
-        
->>>>>>> 78d1c13... 가입 일자 datetime 형으로 변환
         return self._data
 
     def save_result_df(self, path):
